@@ -1,17 +1,20 @@
 from flask import Flask, jsonify, request
 from flask_socketio import SocketIO
 import numpy as np
+import eventlet
+
+# Async model for socketio
+eventlet.monkey_patch()
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
-
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
 # Store the state of our board
 # 0 = Red
 # 1 = Blue
 # 2 = Green
 board = np.zeros([100], dtype=np.uint8)
-EMIT_DELAY = 10
+EMIT_DELAY = 5
 
 
 # RESTAPI - slow
@@ -39,12 +42,25 @@ def update_board(data):
     reqIdx = data['idx']
     reqColor = data['color']
     board[int(reqIdx)] = int(reqColor)
+    print("Updated board at index", reqIdx, "to color", reqColor)
+
+
+@socketio.on("connect")
+def on_connect():
+    print("Client connected")
+    socketio.emit("board", board.tobytes())
+
+
+@socketio.on("disconnect")
+def on_disconnect():
+    print("Client disconnected")
 
 
 def background_emit():
     while True:
         socketio.sleep(EMIT_DELAY)
         socketio.emit('board', board.tobytes())
+        # print("Emitting!")
 
 
 if __name__ == '__main__':
