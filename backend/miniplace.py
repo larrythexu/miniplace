@@ -13,7 +13,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 # 0 = Red
 # 1 = Blue
 # 2 = Green
-board = np.zeros([100], dtype=np.uint8)
+board = np.zeros([10000], dtype=np.uint8)
 EMIT_DELAY = 5
 
 
@@ -39,8 +39,12 @@ def set_board_idx():
 # Receive update from client
 @socketio.on("update")
 def update_board(data):
-    reqIdx = data['idx']
-    reqColor = data['color']
+    reqIdx = data.get('idx', None)
+    reqColor = data.get('color', None)
+
+    if reqIdx is None or reqColor is None:
+        return
+
     board[int(reqIdx)] = int(reqColor)
     print("Updated board at index", reqIdx, "to color", reqColor)
 

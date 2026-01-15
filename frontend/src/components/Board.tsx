@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
+import { Grid } from "react-window"
+import { BoardCell } from "./BoardCell"
 
 export function Board() {
-    const BOARD_COUNT = 100
+    const BOARD_COUNT = 10000
+    const CELL_SIZE = 50
+    const BOARD_ROWS = 500
+    const BOARD_COLS = 20
 
     const [isConnected, setIsConnected] = useState(false)
     const [board, setBoard] = useState<number[]>(Array(BOARD_COUNT).fill(0))
@@ -57,18 +62,18 @@ export function Board() {
 
     return (
         <div className="board">
-            {board.map((color, idx) => {
-                const colorString = color === 0 ? 'red' : color === 1 ? 'blue' : 'green'
-
-                return (
-                    <div
-                        key={idx}
-                        className="board-cell"
-                        style={{ backgroundColor: colorString }}
-                        onClick={() => handleClick(idx)}
-                    />
-                )
-            })}
+            <Grid
+                cellComponent={BoardCell}
+                cellProps={{
+                    board,
+                    handleClick,
+                    boardCols: BOARD_COLS
+                }}
+                columnCount={BOARD_COLS}
+                columnWidth={CELL_SIZE}
+                rowCount={BOARD_ROWS}
+                rowHeight={CELL_SIZE}
+            />
         </div>
     )
 }
