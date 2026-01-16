@@ -7,7 +7,7 @@ import eventlet
 eventlet.monkey_patch()
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio = SocketIO(app, cors_allowed_origins="https://larrythexu.github.io", async_mode="eventlet")
 
 # Store the state of our board
 # 0 = Red
@@ -67,6 +67,8 @@ def background_emit():
         # print("Emitting!")
 
 
+# Start emission when app inits
+socketio.start_background_task(background_emit)
+
 if __name__ == '__main__':
-    socketio.start_background_task(background_emit)
     socketio.run(app, debug=True)

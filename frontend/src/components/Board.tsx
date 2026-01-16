@@ -40,7 +40,7 @@ export function Board() {
     }
 
     useEffect(() => {
-        const socket = io()
+        const socket = io(import.meta.env.VITE_SERVER_URL || "http://127.0.0.1:8000")
         socketRef.current = socket
         socket.on('connect', handleConnect)
         socket.on('disconnect', handleDisconnect)
@@ -60,20 +60,28 @@ export function Board() {
 
     }, [])
 
-    return (
-        <div className="board">
-            <Grid
-                cellComponent={BoardCell}
-                cellProps={{
-                    board,
-                    handleClick,
-                    boardCols: BOARD_COLS
-                }}
-                columnCount={BOARD_COLS}
-                columnWidth={CELL_SIZE}
-                rowCount={BOARD_ROWS}
-                rowHeight={CELL_SIZE}
-            />
-        </div>
-    )
+    if (!isConnected) {
+        return (
+            <div className="board">
+                <p>Connecting to server...</p>
+            </div>
+        )
+    } else {
+        return (
+            <div className="board">
+                <Grid
+                    cellComponent={BoardCell}
+                    cellProps={{
+                        board,
+                        handleClick,
+                        boardCols: BOARD_COLS
+                    }}
+                    columnCount={BOARD_COLS}
+                    columnWidth={CELL_SIZE}
+                    rowCount={BOARD_ROWS}
+                    rowHeight={CELL_SIZE}
+                />
+            </div>
+        )
+    }
 }
