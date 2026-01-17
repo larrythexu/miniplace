@@ -48,4 +48,4 @@ npm run dev
 ```
 
 ## Demo
-![MiniPlace Demo](./media/miniplace-vid.mov)
+![MiniPlace Demo](./media/miniplace-gif.gif)
