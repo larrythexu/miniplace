@@ -47,3 +47,5 @@ npm install
 npm run dev
 ```
 
+## Demo
+![MiniPlace Demo](./media/miniplace-vid.mov)
