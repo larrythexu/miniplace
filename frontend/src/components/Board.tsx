@@ -40,9 +40,7 @@ export function Board() {
     }
 
     useEffect(() => {
-        const socket = io(import.meta.env.VITE_SERVER_URL || "http://127.0.0.1:8000", {
-            transports: ['websocket'] // Only use ws, server only open to Port 80
-        })
+        const socket = io()
         socketRef.current = socket
         socket.on('connect', handleConnect)
         socket.on('disconnect', handleDisconnect)
